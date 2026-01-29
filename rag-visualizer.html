@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Visual RAG Learning Tool</title>
+
+  <style>
+    /* ---------- GLOBAL STYLES ---------- */
+    body {
+      font-family: Inter, system-ui, Arial;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 24px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    p.subtitle {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 32px;
+    }
+
+    /* ---------- RAG PIPELINE CONTAINER ---------- */
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    .step {
+      background: #020617;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid #1e293b;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .step.active {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56,189,248,0.3);
+    }
+
+    .step.completed {
+      border-color: #22c55e;
+    }
+
+    .step h3 {
+      margin-top: 0;
+      font-size: 14px;
+    }
+
+    .progress {
+      height: 6px;
+      background: #1e293b;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #22c55e);
+      transition: width 0.4s ease;
+    }
+
+    /* ---------- MAIN INTERACTION AREA ---------- */
+    .panel {
+      margin-top: 32px;
+      background: #020617;
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid #1e293b;
+    }
+
+    textarea {
+      width: 100%;
+      height: 80px;
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 12px;
+      resize: none;
+    }
+
+    button {
+      margin-top: 16px;
+      padding: 12px 20px;
+      background: #38bdf8;
+      color: #020617;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #0ea5e9;
+    }
+
+    .output {
+      margin-top: 16px;
+      padding: 12px;
+      background: #020617;
+      border: 1px dashed #38bdf8;
+      border-radius: 8px;
+      min-height: 50px;
+      color: #cbd5f5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🔍 Visual RAG Explorer</h1>
+  <p class="subtitle">Learn how Retrieval-Augmented Generation works — step by step</p>
+
+  <!-- ---------- RAG PIPELINE VISUAL ---------- -->
+  <div class="pipeline">
+    <div class="step" id="step1">
+      <h3>1. Ingest Docs</h3>
+      <div class="progress"><span></span></div>
+    </div>
+    <div class="step" id="step2">
+      <h3>2. Chunking</h3>
+      <div class="progress"><span></span></div>
+    </div>
+    <div class="step" id="step3">
+      <h3>3. Embeddings</h3>
+      <div class="progress"><span></span></div>
+    </div>
+    <div class="step" id="step4">
+      <h3>4. Retrieval</h3>
+      <div class="progress"><span></span></div>
+    </div>
+    <div class="step" id="step5">
+      <h3>5. Augment Prompt</h3>
+      <div class="progress"><span></span></div>
+    </div>
+    <div class="step" id="step6">
+      <h3>6. LLM Answer</h3>
+      <div class="progress"><span></span></div>
+    </div>
+  </div>
+
+  <!-- ---------- INTERACTION PANEL ---------- -->
+  <div class="panel">
+    <h3>Ask a Question</h3>
+    <textarea id="question" placeholder="Example: What is RAG?"></textarea>
+    <button onclick="runRAG()">Run RAG Pipeline</button>
+
+    <div class="output" id="output">
+      Waiting for input...
+    </div>
+  </div>
+
+  <script>
+    // ---------- HELPER FUNCTION ----------
+    function activateStep(stepId, progress = 100) {
+      const step = document.getElementById(stepId);
+      step.classList.add("active");
+
+      // Animate progress bar
+      step.querySelector(".progress span").style.width = progress + "%";
+
+      // Mark as completed after animation
+      setTimeout(() => {
+        step.classList.remove("active");
+        step.classList.add("completed");
+      }, 500);
+    }
+
+    // ---------- MAIN RAG FLOW ----------
+    function runRAG() {
+      // Reset UI
+      document.querySelectorAll(".step").forEach(step => {
+        step.classList.remove("active", "completed");
+        step.querySelector(".progress span").style.width = "0%";
+      });
+
+      const output = document.getElementById("output");
+      output.innerText = "Processing your question through RAG pipeline...\n";
+
+      // Simulate each RAG stage with time delays
+      setTimeout(() => {
+        activateStep("step1");
+        output.innerText += "\n📄 Documents ingested.";
+      }, 500);
+
+      setTimeout(() => {
+        activateStep("step2");
+        output.innerText += "\n✂️ Documents split into chunks.";
+      }, 1200);
+
+      setTimeout(() => {
+        activateStep("step3");
+        output.innerText += "\n🧮 Chunks converted into embeddings (vectors).";
+      }, 1900);
+
+      setTimeout(() => {
+        activateStep("step4");
+        output.innerText += "\n🔍 Relevant chunks retrieved via similarity search.";
+      }, 2600);
+
+      setTimeout(() => {
+        activateStep("step5");
+        output.innerText += "\n🧩 Retrieved content injected into prompt.";
+      }, 3300);
+
+      setTimeout(() => {
+        activateStep("step6");
+        output.innerText += "\n🤖 LLM generated answer using retrieved context.";
+      }, 4000);
+    }
+  </script>
+
+</body>
+</html>
